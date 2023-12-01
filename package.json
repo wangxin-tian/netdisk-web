@@ -15,9 +15,11 @@
     "element-plus": "^2.4.2",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+    "nprogress": "^0.2.0",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@iconify/vue": "^4.1.1",

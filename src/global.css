@@ -6,6 +6,14 @@
   --primary-color-light: #F6F5FF;
   --toggle-color: #DDD;
   --text-color: #707070;
+  --item-primary-color: #ecebff50;
+  --item-text-color: #333;
+  --item-border-color: #d6d9f282;
+  --shadow-color: rgb(225, 225, 225);
+  --hide-btn-color: rgb(34, 135, 243);
+  --upload-btn-color: #8a7fff;
+  --upload-toggle-color: #756dd4;
+  --new-btn-border-color: #a4aae0;
 }
 
 .dark {
@@ -15,4 +23,12 @@
   --primary-color-light: #3a3b3c;
   --toggle-color: #fff;
   --text-color: #ccc;
+  --item-primary-color: #e7e5ff50;
+  --item-text-color: #ccc;
+  --item-border-color: #333;
+  --shadow-color: rgb(103, 103, 103);
+  --hide-btn-color: rgb(139, 139, 255);
+  --upload-btn-color: #3a3b3c;
+  --upload-toggle-color: #6d7883;
+  --new-btn-border-color: #737373;
 }

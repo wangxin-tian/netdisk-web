@@ -27,7 +27,7 @@ export default defineConfig({
   // 配置端口
   server: {
     host: '0.0.0.0', // 指定服务器主机名
-    port: 3000, // 指定服务器端口
+    port: 8000, // 指定服务器端口
     hmr: true, // 开启热更新
     open: true, // 在服务器启动时自动在浏览器中打开应用程序
     https: false // 是否开启 https

@@ -9,9 +9,7 @@ import html2Canvas from 'html2Canvas'
 
 const router = useRouter();
 const resumeDom = ref(null);
-
-const loading = ref(true);
-const setLoading = (value) => (loading.value = value);
+const loadingRef = ref(null);
 
 const downloadResumn = () => {
   document.title = 'dhxの个人简历';
@@ -29,13 +27,13 @@ const downloadResumn = () => {
 
 onMounted(() => {
   setTimeout(() => {
-    setLoading(false);
-  }, 3000);
+    loadingRef.value.closeLoading();
+  }, 1000);
 });
 </script>
 <template>
   <div class="wrap">
-    <MyLoading :loading="loading" />
+    <MyLoading ref="loadingRef" />
     <section class="resume">
       <div v-html="content" ref="resumeDom"></div>
       <el-button @click="downloadResumn" class="download-resume" :icon="Download" type="primary" circle />

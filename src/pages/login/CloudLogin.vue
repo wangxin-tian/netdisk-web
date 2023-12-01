@@ -1,45 +1,57 @@
 <script setup>
-import { h, ref, onMounted, inject } from 'vue'
+import { ref, reactive, onMounted, provide } from 'vue'
+import message from '@/utils/message.js'
+import { userLogin } from '@/service/api.js'
 import { Icon } from '@iconify/vue'
-import { ElMessageBox, ElSwitch, ElForm, ElFormItem, ElInput } from 'element-plus'
-import MyLoading from '@/components/MyLoading.vue';
+import MyLoading from '@/components/MyLoading.vue'
+import ModelForm from './component/ModelForm.vue'
+import { useStore } from 'vuex'
 
+const store = useStore();
+const loadingRef = ref(null);
+const open = ref(false);
 const form = ref({ username: '', password: '' });
 
 
-const loading = ref(true);
-const setLoading = (value) => (loading.value = value);
+const setOpen = () => {
+  open.value = true;
+}
 
-const open = () => {
-  ElMessageBox({
-    title: 'Confirm',
-    message: h('div', null, [
-      h(ElForm, {
-        size: 'middle',
-        labelPosition: 'left',
-        labelWidth: '80px',
-        model: form,
-        style: 'max-width: 360px'
-      }, [
-        h(ElFormItem, { label: '用户名', rules: { required: true } }, h(ElInput, { model: form.value.username })),
-        h(ElFormItem, { label: '密码', rules: { required: true }}, h(ElInput, { model: form.value.password })),
-      ])
-    ]),
-  })
+const closeForm = () => {
+  open.value = false;
+}
+
+const jumpBlog = () => {
+  window.open("http://118.195.140.233:3000/home", "_blank");
+}
+
+const submitForm = async () => {
+  console.log(form);
+  const res = await userLogin(form.value);
+  console.log(res)
+  res.code === 400 && message('warning', res.msg);
+
+  if (res.code === 200) {
+    await store.dispatch('login', res.data);
+    message('success', res.msg);
+    console.log(await store.state.user)
+  }
+  closeForm();
 }
 
 onMounted(() => {
   setTimeout(() => {
-    setLoading(false);
-  }, 3000);
+    loadingRef.value.closeLoading();
+  }, 1000);
 });
 </script>
 <template>
   <div class="login-wrapper">
-    <MyLoading :loading="loading" />
+    <ModelForm v-if="open" :form="form" @closeForm="closeForm" @submitForm="submitForm"/>
+    <MyLoading ref="loadingRef" />
     <div class="card">
       <span class="card-title">
-        <Icon class="warning" icon="ep:warning"/><span>温馨提示</span>
+        <Icon class="warning" icon="ep:warning" /><span>温馨提示</span>
       </span>
       <div class="card-content">
         <div><span>1.</span><span>登入账号后才可以查看所有内容哦</span></div>
@@ -49,7 +61,17 @@ onMounted(() => {
         <div><span>5.</span><span>未登入状态打开的网盘页是我分享的文件哦！</span></div>
       </div>
     </div>
-    <el-button plain @click="open">登入账号</el-button>
+    <span v-if="store.getters.isLogin">
+      <el-space>
+        <el-button plain >退出登入</el-button>
+        <el-button plain @click="jumpBlog" >访问博客</el-button>
+        <el-button plain >网盘状态</el-button>
+      </el-space>
+    </span>
+    <span v-else>
+      <el-button plain @click="setOpen">登入账号</el-button>
+      <el-button plain @click="jumpBlog" >访问博客</el-button>
+    </span>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -64,16 +86,22 @@ onMounted(() => {
 
   .card {
     width: 40%;
-    height: 40%;
     background-color: var(--shell-color);
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+
     .card-title {
       display: flex;
       align-items: center;
+
+      &>span {
+        font-weight: bold;
+      }
     }
+
     .card-content {
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       align-items: left;
@@ -86,12 +114,11 @@ onMounted(() => {
         }
       }
     }
-    
+
     .warning {
       font-size: 25px;
       color: rgb(255, 183, 0);
     }
   }
 }
-
 </style>

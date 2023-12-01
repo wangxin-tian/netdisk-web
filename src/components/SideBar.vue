@@ -73,7 +73,7 @@ const switchTheme = () => {
             <i class="icon">
               <Icon class="icon-font" icon="ep:switch-button" />
             </i>
-            <span class="text">注销</span>
+            <span class="text">登入 | 注销</span>
           </a>
         </li>
         <li class="mode">

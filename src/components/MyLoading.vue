@@ -1,5 +1,14 @@
 <script setup>
-  const props = defineProps(['loading'])
+  import { ref, inject } from 'vue'
+
+  const loading = ref(true);
+  const closeLoading = () => {
+    loading.value = false;
+  };
+
+  defineExpose({
+    closeLoading
+  })
 </script>
 
 <template>
