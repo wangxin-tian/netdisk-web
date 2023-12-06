@@ -7,6 +7,8 @@ const routes = [
     { path: "/login", component: () => import("@pages/login/CloudLogin.vue") },
     { path: "/home", component: () => import("@pages/home/HomePage.vue") },
     { path: "/log", component: () => import("@pages/log/ChangeLog.vue") },
+    { path: "/video", component: () => import("@pages/video/VideoPage.vue") },
+    { path: "/read", component: () => import("@pages/read/MarkdownEdit.vue") },
   ] },
 	{ path: "/register", component: () => import("@pages/login/CloudRegister.vue") },
 	{ path: "/jianli", component: () => import("@pages/person/JianLi.vue") },

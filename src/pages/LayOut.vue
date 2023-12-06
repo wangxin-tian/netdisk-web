@@ -1,5 +1,5 @@
 <script setup>
-import { defineAsyncComponent, ref } from 'vue'
+import { defineAsyncComponent, ref, provide } from 'vue'
 
 const SideBar = defineAsyncComponent(() =>
   import("@/components/SideBar.vue")
@@ -10,6 +10,8 @@ const dark = ref(true);
 
 const toggleMenu = () => (close.value = !close.value);
 const toggleTheme = () => (dark.value = !dark.value);
+
+provide('getTheme', dark);
 
 </script>
 <template>

@@ -14,6 +14,11 @@
   --upload-btn-color: #8a7fff;
   --upload-toggle-color: #756dd4;
   --new-btn-border-color: #a4aae0;
+  --audio-bg-color: #cdc2ff69;
+  --image-bg-color: #eeeaffc9;
+  --audio-progress-color: rgba(139, 191, 255, 0.96);
+  --return-parent-color: #756dd4;
+  --shadow-mask: #0005;
 }
 
 .dark {
@@ -31,4 +36,9 @@
   --upload-btn-color: #3a3b3c;
   --upload-toggle-color: #6d7883;
   --new-btn-border-color: #737373;
+  --audio-bg-color: #b6a5ff69;
+  --audio-progress-color: rgba(88, 124, 168, 0.96);
+  --return-parent-color: #ffe17f;
+  --image-bg-color: #a59cca;
+  --shadow-mask: #fff5;
 }

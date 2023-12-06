@@ -37,7 +37,7 @@ const tableData = [
 <template>
   <el-table
     :data="tableData"
-    style="width: 100%"
+    style="width: 80%"
     :row-class-name="tableRowClassName"
   >
     <el-table-column prop="date" label="Date" width="180" />

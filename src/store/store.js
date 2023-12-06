@@ -19,8 +19,94 @@ const ModuleKeyword = {
     }
   },
   actions: {
-    setKeyword(_, { commit }, payload) {
+    setKeyword({ commit }, payload) {
       commit('setKeyword', payload);
+    }
+  }
+}
+
+const ModuleAudio = {
+  state() {
+    return {
+      url: '',
+      name: ''
+    }
+  },
+  getters: {
+    getUrl(state) {
+      return state.url;
+    },
+    getName(state) {
+      return state.name;
+    }
+  },
+  mutations: {
+    setMusic(state, payload) {
+      state.url = payload.url;
+      state.name = payload.name;
+    }
+  },
+  actions: {
+    setMusic({ commit }, payload) {
+      commit('setMusic', payload);
+    }
+  }
+}
+
+const ModuleVideo = {
+  state() {
+    return {
+      url: '',
+      name: ''
+    }
+  },
+  getters: {
+    getUrl(state) {
+      return state.url;
+    },
+    getName(state) {
+      return state.name;
+    }
+  },
+  mutations: {
+    setVideo(state, payload) {
+      state.url = payload.url;
+      state.name = payload.name;
+    }
+  },
+  actions: {
+    setVideo({ commit }, payload) {
+      commit('setVideo', payload);
+    }
+  }
+}
+
+const ModuleText = {
+  state() {
+    return {
+      value: '',
+      name: '',
+      params: {}
+    }
+  },
+  getters: {
+    getText(state) {
+      return state.value;
+    },
+    getName(state) {
+      return state.name;
+    }
+  },
+  mutations: {
+    setText(state, payload) {
+      state.value = payload.value;
+      state.name = payload.name;
+      state.params = payload.params;
+    }
+  },
+  actions: {
+    setText({ commit }, payload) {
+      commit('setText', payload);
     }
   }
 }
@@ -38,6 +124,9 @@ const ModuleUser = {
     isLogin: (state) => {
       console.log('getter:', state.token);
       return state.token ? true : false;
+    },
+    getUserid: (state) => {
+      return state.id;
     }
   },
   mutations: {
@@ -61,7 +150,10 @@ const ModuleUser = {
 const store = createStore({
   modules: {
     kw: ModuleKeyword,
-    user: ModuleUser
+    user: ModuleUser,
+    audio: ModuleAudio,
+    video: ModuleVideo,
+    text: ModuleText
   }
 });
 

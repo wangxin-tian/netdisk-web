@@ -4,43 +4,85 @@ import ListItem from "./component/ListItem.vue";
 import TableHead from "./component/TableHead.vue";
 import HomeHead from "./component/HomeHead.vue";
 import HomeSide from "./component/HomeSide.vue";
+import ImageFloat from "@/components/ImageFloat.vue";
 import draggable from "vuedraggable";
+import { select, selectWithMsg } from '@/utils/crud.js';
+import { selectFiles, selectFolders, playFile } from '@/service/api.js';
+import { dispatchPlay, dispatchDownload } from '@/utils/tool.js'
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+// import { image } from "html2canvas/dist/types/css/types/image";
 
-const sideOpen = ref(false);
-const toggleSide = () => {
-  sideOpen.value = !sideOpen.value;
-};
-
-const state = reactive({
-  //需要拖拽的数据，拖拽后数据的顺序也会变化
-  list: [
-    { filename: "www.itxst.com", id: 0, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 2, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 3, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 0, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 2, filetype: 2, filesize: undefined, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 3, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 0, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 2, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-    { filename: "www.itxst.com", id: 3, filetype: 2, filesize: 10, folderid: 0, createTime: new Date(), isDel: 0 },
-  ],
+const sideOpen = ref(true);
+const urlList = ref([]);
+const imageState = reactive({
+  url: '', name: '', visible: false
 });
 
-//拖拽开始的事件
-const onStart = () => {
-  console.log("开始拖拽");
+const urlListPush = i => urlList.value.push(i);
+const urlListPop = _ => urlList.value.pop();
+const returnRoot = _ => {
+  openFolder();
+  urlList.value = []
 };
 
-//拖拽结束的事件
-const onEnd = () => {
-  console.log("结束拖拽");
+const toggleSide = () => { sideOpen.value = !sideOpen.value; };
+const openSide = () => { sideOpen.value === false && (sideOpen.value = true)};
+const openImage = (url, name) => {
+  imageState.url = url;
+  imageState.name = name;
+  imageState.visible = true;
 };
+const closeImage = () => (imageState.visible = false);
+
+const state = reactive({ list: [], /*需要拖拽的数据，拖拽后数据的顺序也会变化*/ });
+
+//拖拽事件
+const onStart = () => { console.log("开始拖拽"); };
+const onEnd = () => { console.log("结束拖拽"); };
+
+const store = useStore();
+const router = useRouter();
+
+const runFilesAsync = select(selectFiles);
+const runFoldersAsync = select(selectFolders);
+
+const openFolder = async (id = 0) => {
+  const list = await Promise.all([
+    runFoldersAsync({
+      userid: store.getters.getUserid, id
+    }),
+    runFilesAsync({
+      userid: store.getters.getUserid, folderid: id
+    }),
+  ]);
+
+  if (list?.length > 0) {
+    state.list = list.flat().map(i => {
+      const pre = i.folderName | i.filename;
+      const suffix = i.id;
+      i.key = `${pre}_${suffix}`;
+      return i;
+    });
+  }
+}
+
+const openFile = async (params) => {
+  dispatchPlay(params.filetype, { store, router, params, openSide, openImage });
+};
+
+const downloadFile = async (params) => dispatchDownload(params);
+
+const init = async () => openFolder();
+
+onMounted(init);
 </script>
 <template>
   <div class="itxst">
     <div class="home-page-content">
       <div class="home-head">
-        <HomeHead :open="sideOpen" @toggleSide="toggleSide" />
+        <HomeHead :urlList="urlList" :open="sideOpen" @toggleSide="toggleSide" @openFolder="openFolder"
+          @returnRoot="returnRoot" @popUrl="urlListPop" />
       </div>
       <div class="home-table-wrap">
         <div class="table-bg">
@@ -58,18 +100,22 @@ const onEnd = () => {
           <div class="home-table-title">
             <TableHead />
           </div>
-          <draggable :list="state.list" class="home-table" ghost-class="ghost" chosen-class="chosenClass" animation="300"
-            :sort="false" @start="onStart" @end="onEnd">
+          <draggable :list="state.list" item-key="key" class="home-table" ghost-class="ghost" chosen-class="chosenClass"
+            animation="300" :sort="false" @start="onStart" @end="onEnd">
             <template #item="{ element }">
-              <ListItem :element="element" />
+              <ListItem :element="element" @openFolder="openFolder" @pushUrl="urlListPush" @openFile="openFile" @downloadFile="downloadFile"/>
             </template>
           </draggable>
         </div>
       </div>
     </div>
-    <div class="home-page-side" v-if="sideOpen" >
-        <HomeSide />
+    <div class="home-page-side" v-show="sideOpen">
+      <HomeSide />
     </div>
+    <ImageFloat :visible="imageState.visible" :url="imageState.url" @closeImage="closeImage"/>
+    <!-- <el-dialog v-model="imageState.visible" :title="imageState.name" width="60%" top="5%" draggable>
+      <img :src="imageState.url" :alt="imageState.name" class="image-view">
+    </el-dialog> -->
   </div>
 </template>
 <style scoped>
@@ -89,6 +135,10 @@ const onEnd = () => {
     padding-bottom: 10px;
   }
 
+  .image-view {
+      width: 100%;
+  }
+
   .home-page-content {
     flex: 1;
     height: 100vh;
@@ -103,6 +153,7 @@ const onEnd = () => {
     padding-left: 10px;
     padding-right: 10px;
   }
+
   .home-table-wrap {
     width: 100%;
     padding: 10px;
@@ -143,29 +194,11 @@ const onEnd = () => {
 
     /* Webkit浏览器（如Chrome、Safari） */
     &::-webkit-scrollbar {
-      width: 0px;
+      width: 2px;
     }
 
-    &::-webkit-scrollbar-track {
+    &::-webkit-scrollbar-thumb {
       background: #b3c2e0;
-    }
-
-    /* Firefox浏览器 */
-    &::-moz-scrollbar {
-      width: 0px;
-    }
-
-    &::-moz-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    /* IE浏览器 */
-    &::-ms-scrollbar {
-      width: 0px;
-    }
-
-    &::-ms-scrollbar-track {
-      background: #f1f1f1;
     }
   }
 }

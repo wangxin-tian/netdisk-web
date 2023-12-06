@@ -25,14 +25,12 @@ export default `
 			}
 
 			.title {
-				font-size: 25px;
-				font-weight: 400;
-				line-height: 40px;
+				font-weight: bold;
 			}
 
 			.footer-title {
 				font-size: 25px;
-				font-weight: 400;
+				font-weight: bold;
 				line-height: 30px;
 			}
 
@@ -53,7 +51,7 @@ export default `
 			}
 
 			.content .blank {
-				height: 10px;
+				height: 3px;
 			}
 
 			.hide {
@@ -133,14 +131,14 @@ export default `
 						<div class="title">专业资料</div>
 						<div class="line"></div>
 						<div class="content">
-							<div>擅长：JavaScript Vue；</div>
+							<div>熟悉：JavaScript Vue3 React Nestjs；（实习时一直维护基于react的oa项目比较熟悉）</div>
 							<div>
-								了解：React Uniapp MongoDB Node；（了解常规用法）
+								了解：Uniapp Node TypeScript；（了解常规配置和用法，node中主要使用过文件和加密安全）
 							</div>
 							<div>
-								了解：Webpack TypeScript Git HTTP Sass；（了解基本用法）
+								了解：Webpack Git HTTP Sass；（熟悉git flow，以及能够脱离脚手架使用webpack搭建demo）
 							</div>
-							<div>other：Java Python SQL；（知道基本语法）</div>
+							<div>other：Java Python SQL MongoDB；（能根据需要配置项目，但不没有用过多线程和复杂的sql）</div>
 						</div>
 					</td>
 				</tr>
@@ -158,27 +156,26 @@ export default `
 								<div class="subtitle">基于SSM + Vue的个人网盘系统</div>
 								<div class="blank"></div>
 								<div>
-									主要技术：Vue2 Axios Vuex Router Element-ui Java SSM
-									MySQL
+									主要技术：SpringBoot JWT MySQL Vue3 Vite Axios Vuex vue-router Element-plus pdfjs markedjs
 								</div>
 								<div>
-									项目描述：使用vue开发的个人网盘页面，可以上传、存储、下载和在线预览。
+									项目描述：使用vue3重构自己的个人网盘，实现了文件的管理、阅读、编辑和分享。
 								</div>
 								<div>
-									主要内容：1. 使用Java的SSM框架简单的写了页面的crud；
+									主要内容：1. 使用jsonwebtoken做了鉴权管理，文件加密存储，同时文件采用字节流的形式传递；
 								</div>
 								<div>
 									<span class="hide">主要内容：</span
 									><span
 										>2.
-										Echart做文件占比的可视化处理，使用vuex传递管理音频数据状态；</span
+										封装了图片、视频和音频的组件和模块；</span
 									>
 								</div>
 								<div>
 									<span class="hide">主要内容：</span
 									><span
 										>3.
-										使用Blob处理http响应的字节数组，限制了静态资源的访问；</span
+										支持编辑和预览markdown和txt以及html文件；</span
 									>
 								</div>
 							</div>
@@ -262,13 +259,13 @@ export default `
 						</div>
 						<div style="display: flex; align-items: center">
 							<span class="footer-title">个人兴趣:</span
-							>哑铃、blender、王者、啃书、嵌入式<span></span>
+							>哑铃、blender、王者、啃书、树莓派<span></span>
 						</div>
 						<div style="display: flex; align-items: center">
 							<span class="footer-title">自我评价:</span>
 							<span style="flex: 0.9">乐于分享|互相信任|团队合作</span>
 							<span class="footer-title">其他:</span>
-							<span>做过门卫、兼职</span>
+							<span>做过门卫、志愿者</span>
 						</div>
 						<div class="line"></div>
 					</td>

@@ -1,9 +1,21 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { ref, toRefs } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
 
-const type = ref(1);
+const state = reactive({
+  type: 0,
+  value: {}
+});
 const checked = ref(false);
+
+const iconMap = {
+  0: "zondicons:folder",
+  1: "clarity:picture-line",
+  2: "carbon:music",
+  3: "ph:video",
+  4: "ph:file",
+  5: "ant-design:file-unknown-twotone"
+}
 
 const props = defineProps({
   element: {
@@ -11,29 +23,73 @@ const props = defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['openFolder', 'pushUrl', 'openFile', 'downloadFile']);
+
+const openFolder = () => {
+  emit('openFolder', state.value.id);
+  emit('pushUrl', state.value);
+};
+
+const openFile = () => {
+  emit('openFile', state.value);
+}
+
+const handleDownload = () => emit('downloadFile', state.value);
+
+const formatName = name => {
+  console.log('name', name)
+  if (name) {
+    
+    return name.length > 16 ? name.substring(0, 13) + '...' : name;
+  }
+  return '-'
+}
+
+onBeforeMount(() => {
+  if (props.element) {
+    state.type = props.element.filetype;
+    state.value = props.element;
+  }
+});
 </script>
 <template>
   <div class="item-wrap-body">
     <div class="item-content item">
-      <input type="checkbox" v-model="checked" :class="['item-check-input', { 'checked': checked }]" name="" id="">
-      <Icon v-if="type === 0" icon="zondicons:folder" class="item-check-icon folder" />
-      <Icon v-else-if="type === 1" icon="ep:picture-filled" class="item-check-icon file" />
-      <Icon v-else-if="type === 2" icon="zondicons:playlist" class="item-check-icon file" />
-      <Icon v-else-if="type === 3" icon="material-symbols-light:smart-display-rounded" class="item-check-icon file" />
-      <Icon v-else-if="type === 4" icon="zondicons:document" class="item-check-icon file" />
-      <div class="item-name">{{ element ? element["filename"] : '' }}</div>
-      <div class="hide-btns">
-        <Icon icon="ep:share" />
-        <Icon icon="ep:download" />
-        <Icon icon="ep:delete" />
-        <Icon icon="fluent:rename-24-regular" />
-        <Icon icon="ph:copy" />
-        <Icon icon="mynaui:move" />
-      </div>
-      <div class="item-time">{{ element ? (new Date(element["createTime"])).toLocaleString() : '' }}</div>
-      <div class="item-size">{{ element["filesize"] ?? '-' }}</div>
+      <!-- file item -->
+      <template v-if="state.type">
+        <input type="checkbox" v-model="checked" :class="['item-check-input', { 'checked': checked }]" name="" id="">
+        <Icon :icon="iconMap[element.filetype]" class="item-check-icon file" />
+        <div class="item-name" @click="openFile">{{ formatName(state.value.filename) }}</div>
+        <div class="hide-btns">
+          <Icon icon="ep:share" />
+          <Icon icon="ep:download" @click="handleDownload" />
+          <Icon icon="ep:delete" />
+          <Icon icon="fluent:rename-24-regular" />
+          <Icon icon="ph:copy" />
+          <Icon icon="mynaui:move" />
+        </div>
+        <div class="item-time">{{ (new Date(element["createTime"] ?? '')).toLocaleString() }}</div>
+        <div class="item-size">{{ (state.value.filesize + 'MB') ?? '-' }}</div>
+      </template>
+      <!-- folder item -->
+      <template v-else >
+        <input type="checkbox" v-model="checked" :class="['item-check-input', { 'checked': checked }]" name="" id="">
+        <Icon icon="zondicons:folder" class="item-check-icon folder" />
+        <div class="item-name" @click="openFolder()" >{{ state.value.folderName ?? '' }}</div>
+        <div class="hide-btns">
+          <Icon icon="ep:share" />
+          <!-- <Icon icon="ep:download" /> -->
+          <Icon icon="ep:delete" />
+          <Icon icon="fluent:rename-24-regular" />
+          <Icon icon="ph:copy" />
+          <Icon icon="mynaui:move" />
+        </div>
+        <div class="item-time">{{ (new Date(state.value["createTime"] ?? '')).toLocaleString() }}</div>
+        <div class="item-size">{{ '-' }}</div>
+      </template>
     </div>
-    <div style="height: 5px;" ></div>
+    <div style="height: 5px;"></div>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -42,6 +98,7 @@ const props = defineProps({
     background-color: var(--item-primary-color);
   }
 }
+
 .item-content {
   display: flex;
   flex-direction: row;
@@ -128,6 +185,7 @@ const props = defineProps({
   border-top: solid 1px var(--item-border-color);
   padding-left: 10px;
   text-align: left;
+
   &+.item {
     margin-top: 0px;
   }
